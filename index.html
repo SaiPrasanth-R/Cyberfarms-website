@@ -828,7 +828,7 @@ function ProductCard({ name, description, docHref, downloadHref, initials }) {
         <p className="product-desc">{description}</p>
       </div>
       <div className="product-actions">
-        <a href={docHref || "#blogs"} className="btn btn-outline">Documentation</a>
+        <a href={docHref || "#services"} className="btn btn-outline">Documentation</a>
         <a href={downloadHref || "#"} className="btn btn-primary">Download</a>
       </div>
     </div>
@@ -863,7 +863,13 @@ function Services({ categories }) {
 function Blogs() {
   return (
     <section id="blogs">
-      <h2>Blogs</h2>
+      <h1>Blogs</h1>
+      <p>
+        We're just getting started — posts on our products, engineering
+        practices, and company updates will appear here. Check back soon,
+        or follow the links in Services/Products for documentation on a
+        specific product.
+      </p>
     </section>
   );
 }

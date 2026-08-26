@@ -304,7 +304,7 @@
     }
 
     function emptyProduct() {
-      return { name: "New Product", initials: "NP", description: "", docHref: "#blogs", downloadHref: "#" };
+      return { name: "New Product", initials: "NP", description: "", docHref: "#services", downloadHref: "#" };
     }
 
     function TextField({ label, value, onChange, placeholder }) {
@@ -387,7 +387,7 @@
           <div>
             <UrlField label="Documentation link" value={product.docHref}
                        onChange={(v) => onChange({ ...product, docHref: v })}
-                       placeholder="#blogs or https://..." />
+                       placeholder="#services, #<category-id>, or https://..." />
           </div>
           <div>
             <UrlField label="Download link" value={product.downloadHref}
