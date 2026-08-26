@@ -1,7 +1,7 @@
 // Shared content store for the Cyberfarms site.
-// appCyberfarms.html reads from this to render; admin.html writes to it.
+// index.html reads from this to render; admin.html writes to it.
 // No backend exists yet, so edits persist in the browser's localStorage —
-// changes made in admin.html only show up on appCyberfarms.html when opened
+// changes made in admin.html only show up on index.html when opened
 // in the same browser (or after using Export/Import to move the JSON around).
 
 (function () {
