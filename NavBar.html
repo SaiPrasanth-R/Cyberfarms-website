@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cyberfarms — Navigation Bar</title>
+
+  <!-- React + ReactDOM + Babel from CDN (same as Step 1) -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- =========================================================
+       NAVIGATION BAR CSS
+       =========================================================
+       This whole <style> block is just for the NavigationBar.
+       Copy/paste it as one chunk into your real stylesheet later.
+       Everything is namespaced under .navbar so it won't collide
+       with other styles.
+       ========================================================= -->
+  
+    // ---------------------------------------------------------
+    function App() {
+      return (
+        <div>
+          <NavigationBar />
+
+          {/* Placeholder sections — delete these once you have real content. */}
+          <section id="home" style={{ padding: "6rem 2rem", minHeight: "60vh" }}>
+            <h1>Home</h1>
+            <p>Top of the page. Scroll down or click the nav to test.</p>
+          </section>
+          <section id="about" style={{ padding: "6rem 2rem", minHeight: "60vh", background: "#ECE5D5" }}>
+            <h2>About Us</h2>
+          </section>
+          <section id="services" style={{ padding: "6rem 2rem", minHeight: "40vh" }}>
+            <h2>Services / Products</h2>
+            <p>The sub-sections below are what the dropdown links jump to.</p>
+          </section>
+          <section id="aggregators" style={{ padding: "4rem 2rem", background: "#ECE5D5" }}>
+            <h3>Aggregators</h3>
+          </section>
+          <section id="platforms" style={{ padding: "4rem 2rem" }}>
+            <h3>Platforms</h3>
+          </section>
+          <section id="supply-chain" style={{ padding: "4rem 2rem", background: "#ECE5D5" }}>
+            <h3>Supply Chain &amp; Logistics</h3>
+          </section>
+          <section id="workflow-engines" style={{ padding: "4rem 2rem" }}>
+            <h3>Workflow Engines</h3>
+          </section>
+          <section id="mental-health" style={{ padding: "4rem 2rem", background: "#ECE5D5" }}>
+            <h3>Mental Health Training</h3>
+          </section>
+          <section id="blogs" style={{ padding: "6rem 2rem", minHeight: "60vh" }}>
+            <h2>Blogs</h2>
+          </section>
+          <section id="faq" style={{ padding: "6rem 2rem", minHeight: "60vh", background: "#ECE5D5" }}>
+            <h2>FAQ</h2>
+          </section>
+          <section id="events" style={{ padding: "6rem 2rem", minHeight: "60vh" }}>
+            <h2>Events</h2>
+          </section>
+          <section id="contact" style={{ padding: "6rem 2rem", minHeight: "60vh", background: "#ECE5D5" }}>
+            <h2>Contact Us</h2>
+          </section>
+        </div>
+      );
+    }
+
+    // Mount the app
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+
+  </script>
+
+</body>
+</html>

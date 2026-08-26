@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cyberfarms — React Setup</title>
+
+
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="siteData.js"></script>
+
+
+<style>
+
+  /* ===== Page background & body baseline ===== */
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #1A2E1F;
+
+  /* Soft mint-to-bone gradient that complements the footer */
+  background: linear-gradient(180deg, #E8F5F2 0%, #F4F1E8 60%, #EFEAD9 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Subtle paper-grain texture overlay across the whole page */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.25;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.1, 0 0 0 0 0.18, 0 0 0 0 0.15, 0 0 0 0.15 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+
+/* Make sure all real content sits above the texture overlay */
+.navbar,
+section,
+.site-footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* Default link color across the page */
+a {
+  color: #B8410E;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: #1A2E1F;
+}
+
+/* Selection highlight */
+::selection {
+  background: #B8410E;
+  color: #F4F1E8;
+}
+
+
+    html { scroll-behavior: smooth; }
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: #F4EFE4;
+  border-bottom: 1px solid rgba(26, 46, 31, 0.15);
+  padding: 1rem 0;
+}
+
+.navbar-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 4vw, 3rem);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1A2E1F;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+}
+
+.navbar-brand-mark {
+  width: 0.65rem;
+  height: 0.65rem;
+  background: #B8410E;
+  border-radius: 50%;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+}
+
+.navbar-links > li { position: relative; }
+
+.navbar-link {
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #1A2E1F;
+  text-decoration: none;
+  padding: 0.4rem 0;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: color 0.2s;
+}
+
+.navbar-link:hover { color: #B8410E; }
+
+.navbar-link::after {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 0; right: 100%;
+  bottom: -2px;
+  height: 1px;
+  background: #B8410E;
+  transition: right 0.25s ease;
+}
+.navbar-link:hover::after { right: 0; }
+
+.navbar-caret { font-size: 0.7rem; transition: transform 0.25s; }
+.navbar-dropdown.open > .navbar-link .navbar-caret { transform: rotate(180deg); }
+
+.navbar-submenu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  min-width: 260px;
+  background: #FFFFFF;
+  border: 1px solid rgba(26, 46, 31, 0.15);
+  border-radius: 4px;
+  box-shadow: 0 8px 24px rgba(26, 46, 31, 0.12);
+  padding: 0.5rem 0;
+  list-style: none;
+  margin: 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
+}
+
+.navbar-dropdown:hover > .navbar-submenu,
+.navbar-dropdown.open > .navbar-submenu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.navbar-submenu li a {
+  display: block;
+  padding: 0.7rem 1.1rem;
+  font-size: 0.85rem;
+  color: #1A2E1F;
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.navbar-submenu li a:hover {
+  background: #F4EFE4;
+  border-left-color: #B8410E;
+  color: #B8410E;
+}
+
+.navbar-toggle {
+  display: none;
+  background: none;
+  border: 1px solid #1A2E1F;
+  padding: 0.5rem 0.85rem;
+  cursor: pointer;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #1A2E1F;
+  font-family: inherit;
+}
+
+@media (max-width: 900px) {
+  .navbar-toggle { display: inline-block; }
+
+  .navbar-links {
+    position: absolute;
+    top: 100%;
+    left: 0; right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    background: #F4EFE4;
+    border-bottom: 1px solid #1A2E1F;
+    padding: 0 1.5rem;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+  }
+  .navbar-links.open {
+    max-height: 600px;
+    padding: 0.5rem 1.5rem 1rem;
+  }
+
+  .navbar-links > li { border-top: 1px solid rgba(26,46,31,0.1); }
+  .navbar-links > li:first-child { border-top: none; }
+
+  .navbar-link {
+    padding: 0.9rem 0;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .navbar-submenu {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    box-shadow: none;
+    border: none;
+    background: transparent;
+    padding: 0 0 0 1rem;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  .navbar-dropdown.open > .navbar-submenu {
+    max-height: 400px;
+    padding-bottom: 0.5rem;
+  }
+
+  .navbar-submenu li a { padding: 0.55rem 0.5rem; }
+}
+
+
+
+/* ===== Base body ===== */
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: #F4EFE4;
+  color: #1A2E1F;
+  line-height: 1.6;
+}
+
+/* ===== Generic Section Container (Home, About, Blogs, FAQ, Events, Contact) ===== */
+section {
+  scroll-margin-top: 80px; /* so sticky navbar doesn't hide the heading */
+}
+
+#home, #about, #blogs, #faq, #events, #contact {
+  max-width: 1000px;
+  margin: 3rem auto;
+  padding: 3rem clamp(1.5rem, 4vw, 3.5rem);
+  background: #FFFFFF;
+  border: 1px solid rgba(26, 46, 31, 0.12);
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(26, 46, 31, 0.04);
+}
+
+#home h1, #about h1, #blogs h1, #faq h1, #events h1, #contact h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #1A2E1F;
+  margin: 0 0 1rem;
+  line-height: 1.1;
+  border-bottom: 2px solid #B8410E;
+  padding-bottom: 0.75rem;
+  display: inline-block;
+}
+
+#home h2, #about h2, #blogs h2, #faq h2, #events h2, #contact h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.05rem;
+  font-weight: 400;
+  color: #2C4233;
+  margin: 1.5rem 0;
+  letter-spacing: 0;
+  line-height: 1.7;
+}
+
+#home p, #about p, #blogs p, #faq p, #events p, #contact p {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #2C4233;
+  margin: 0 0 1rem;
+}
+
+/* ===== Products / Services Section ===== */
+#services {
+  max-width: 1280px;
+  margin: 3rem auto;
+  padding: 2rem clamp(1.5rem, 4vw, 3rem);
+}
+
+#services > h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 600;
+  color: #1A2E1F;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.5rem;
+  border-bottom: 2px solid #B8410E;
+  padding-bottom: 0.75rem;
+  display: inline-block;
+}
+
+#services > p.lead {
+  font-size: 1.05rem;
+  color: #2C4233;
+  max-width: 65ch;
+  margin: 0.5rem 0 2rem;
+}
+
+/* Each category container */
+.category-block {
+  margin: 2.5rem 0;
+  padding: 2rem;
+  background: #FFFFFF;
+  border: 1px solid rgba(26, 46, 31, 0.12);
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(26, 46, 31, 0.04);
+  scroll-margin-top: 80px;
+}
+
+.category-block h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.4rem, 2.5vw, 1.85rem);
+  font-weight: 600;
+  color: #1A2E1F;
+  letter-spacing: -0.015em;
+  margin: 0 0 0.4rem;
+}
+
+.category-desc {
+  font-size: 0.95rem;
+  color: #4A6741;
+  margin: 0 0 1.5rem;
+  max-width: 60ch;
+}
+
+/* Responsive grid of product cards */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+/* ===== Individual Product Card ===== */
+.product-card {
+  display: flex;
+  flex-direction: column;
+  background: #FFFFFF;
+  border: 1px solid rgba(26, 46, 31, 0.15);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(26, 46, 31, 0.12);
+  border-color: rgba(184, 65, 14, 0.4);
+}
+
+.product-logo {
+  background: #F4EFE4;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid rgba(26, 46, 31, 0.08);
+}
+
+.product-logo svg {
+  width: 70px;
+  height: 70px;
+}
+
+.product-body {
+  padding: 1.25rem 1.25rem 0.5rem;
+  flex-grow: 1;
+}
+
+.product-name {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #1A2E1F;
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+.product-desc {
+  font-size: 0.875rem;
+  color: #4A6741;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.product-actions {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem 1.25rem 1.25rem;
+}
+
+.btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  font-family: inherit;
+  border: 1px solid;
+}
+
+.btn-outline {
+  background: transparent;
+  color: #1A2E1F;
+  border-color: #1A2E1F;
+}
+.btn-outline:hover {
+  background: #1A2E1F;
+  color: #F4EFE4;
+}
+
+.btn-primary {
+  background: #B8410E;
+  color: #FFFFFF;
+  border-color: #B8410E;
+}
+.btn-primary:hover {
+  background: #1A2E1F;
+  border-color: #1A2E1F;
+}
+
+
+
+// CSS footer
+
+/* ===== Footer ===== */
+.site-footer {
+  background: #A1F0E9;
+  color: #0F2A2E;
+  margin-top: 4rem;
+  padding: 3rem clamp(1.5rem, 4vw, 3rem) 1.5rem;
+  border-top: 4px solid #A1ECF0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle decorative accent at the top */
+.site-footer::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(15,42,46,0.25), transparent);
+}
+
+.footer-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* Top: brand + links columns */
+.footer-top {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 2.5rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid rgba(15,42,46,0.15);
+}
+
+@media (max-width: 900px) {
+  .footer-top {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 540px) {
+  .footer-top {
+    grid-template-columns: 1fr;
+  }
+}
+
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.footer-brand-name {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0F2A2E;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.footer-brand-mark {
+  width: 0.6rem;
+  height: 0.6rem;
+  background: #B8410E;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.footer-brand p {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #1A4548;
+  max-width: 30ch;
+  margin: 0;
+}
+
+/* Footer link columns */
+.footer-col h4 {
+  font-family: system-ui, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #0F2A2E;
+  margin: 0 0 1rem;
+}
+
+.footer-col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.footer-col a,
+.footer-col span {
+  font-size: 0.9rem;
+  color: #1A4548;
+  text-decoration: none;
+  transition: color 0.2s;
+  cursor: pointer;
+}
+
+.footer-col a:hover {
+  color: #B8410E;
+}
+
+/* Address block stays plain text */
+.footer-col address {
+  font-style: normal;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #1A4548;
+}
+
+/* Social media row */
+.footer-social {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.footer-social a {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(15,42,46,0.08);
+  color: #0F2A2E;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+
+.footer-social a:hover {
+  background: #0F2A2E;
+  color: #A1F0E9;
+  transform: translateY(-2px);
+}
+
+.footer-social svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+/* Bottom row: copyright + legal links */
+.footer-bottom {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.82rem;
+  color: #1A4548;
+}
+
+.footer-legal {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.footer-legal a {
+  color: #1A4548;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-legal a:hover {
+  color: #B8410E;
+}
+
+</style>
+
+</head>
+<body>
+
+  <!--
+    React will mount the entire app inside this <div>.
+    The id "root" is the convention; you can name it anything.
+  -->
+  <div id="root"></div>
+
+  <!--
+    type="text/babel" is the magic bit — it tells Babel:
+    "don't run this as plain JS, transpile the JSX first, THEN run it."
+
+    Without type="text/babel", the browser would see <h1>... inside JS
+    and throw a syntax error.
+  -->
+  <script type="text/babel">
+
+
+    const productSubMenu = [
+  { label: "Aggregators",              href: "#aggregators" },
+  { label: "Platforms",                href: "#platforms" },
+  { label: "Supply Chain & Logistics", href: "#supply-chain" },
+  { label: "Workflow Engines",         href: "#workflow-engines" },
+  { label: "Mental Health Training",   href: "#mental-health" },
+];
+
+const navItems = [
+  { label: "Home",              href: "#home" },
+  { label: "About Us",          href: "#about" },
+  { label: "Services/Products", href: "#services", submenu: productSubMenu },
+  { label: "Blogs",             href: "#blogs" },
+  { label: "FAQ",               href: "#faq" },
+  { label: "Events",            href: "#events" },
+  { label: "Contact Us",        href: "#contact" },
+];
+
+function NavigationBar() {
+  const [openIndex, setOpenIndex] = React.useState(null);
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+
+  const closeAll = () => {
+    setOpenIndex(null);
+    setMobileOpen(false);
+  };
+
+  const toggleDropdown = (i) => {
+    setOpenIndex(openIndex === i ? null : i);
+  };
+
+  return (
+    <nav className="navbar" aria-label="Primary">
+      <div className="navbar-inner">
+        <a href="#home" className="navbar-brand" onClick={closeAll}>
+          <span className="navbar-brand-mark"></span>
+          Cyberfarms
+        </a>
+
+        <button
+          className="navbar-toggle"
+          aria-expanded={mobileOpen}
+          aria-label="Toggle menu"
+          onClick={() => setMobileOpen(!mobileOpen)}
+        >
+          {mobileOpen ? "Close" : "Menu"}
+        </button>
+
+        <ul className={mobileOpen ? "navbar-links open" : "navbar-links"}>
+          {navItems.map((item, i) => {
+            const hasSubmenu = Array.isArray(item.submenu);
+            const isOpen = openIndex === i;
+
+            return (
+              <li
+                key={item.label}
+                className={
+                  "navbar-item" +
+                  (hasSubmenu ? " navbar-dropdown" : "") +
+                  (isOpen ? " open" : "")
+                }
+              >
+                {hasSubmenu ? (
+                  <button
+                    className="navbar-link"
+                    aria-haspopup="true"
+                    aria-expanded={isOpen}
+                    onClick={() => toggleDropdown(i)}
+                  >
+                    {item.label}
+                    <span className="navbar-caret" aria-hidden="true">▾</span>
+                  </button>
+                ) : (
+                  <a href={item.href} className="navbar-link" onClick={closeAll}>
+                    {item.label}
+                  </a>
+                )}
+
+                {hasSubmenu && (
+                  <ul className="navbar-submenu">
+                    {item.submenu.map((sub) => (
+                      <li key={sub.label}>
+                        <a href={sub.href} onClick={closeAll}>
+                          {sub.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </nav>
+  );
+}
+
+//MY NAVIGATION BAR IS COMPLETE
+    // Our first React component.
+    // Components are just functions that return JSX.
+
+    function Home({ heading, body }) {
+  return (
+    <section id="home">
+        <div>
+      <h1>{heading}</h1>
+      <h2>{body}</h2>
+        </div>
+    </section>
+  );
+}
+
+function AboutUs({ heading, body }) {
+  return (
+    <section id="about">
+      <h2>{heading}</h2>
+      <div>
+       <h2>{body}</h2>
+      </div>
+    </section>
+  );
+}
+
+// Reusable placeholder logo — swap with <img src="..." /> when you have real logos
+function PlaceholderLogo({ initials }) {
+  return (
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <rect width="100" height="100" rx="14" fill="#2C4233" />
+      <circle cx="82" cy="18" r="5" fill="#B8410E" />
+      <text x="50" y="62" fontFamily="Georgia, serif" fontSize="32"
+            fontWeight="600" fill="#F4EFE4" textAnchor="middle">
+        {initials}
+      </text>
+    </svg>
+  );
+}
+
+// Single product card
+function ProductCard({ name, description, docHref, downloadHref, initials }) {
+  return (
+    <div className="product-card">
+      <div className="product-logo">
+        <PlaceholderLogo initials={initials} />
+      </div>
+      <div className="product-body">
+        <h3 className="product-name">{name}</h3>
+        <p className="product-desc">{description}</p>
+      </div>
+      <div className="product-actions">
+        <a href={docHref || "#blogs"} className="btn btn-outline">Documentation</a>
+        <a href={downloadHref || "#"} className="btn btn-primary">Download</a>
+      </div>
+    </div>
+  );
+}
+
+// Category container — heading + grid of product cards
+function CategoryBlock({ id, name, description, products }) {
+  return (
+    <div id={id} className="category-block">
+      <h2>{name}</h2>
+      {description && <p className="category-desc">{description}</p>}
+      <div className="product-grid">
+        {products.map((p) => <ProductCard key={p.name} {...p} />)}
+      </div>
+    </div>
+  );
+}
+
+function Services({ categories }) {
+  return (
+    <section id="services">
+      <h1>Services / Products</h1>
+      <p className="lead">
+        Five product families. Click Documentation to read more, or Download to get the application.
+      </p>
+      {categories.map((cat) => <CategoryBlock key={cat.id} {...cat} />)}
+    </section>
+  );
+}
+
+function Blogs() {
+  return (
+    <section id="blogs">
+      <h2>Blogs</h2>
+    </section>
+  );
+}
+
+function FAQ() {
+  return (
+    <section id="faq">
+      <h2>FAQ</h2>
+    </section>
+  );
+}
+
+function Events() {
+  return (
+    <section id="events">
+      <h2>Events</h2>
+    </section>
+  );
+}
+
+function ContactUs() {
+  return (
+    <section id="contact">
+      <h2>Contact Us</h2>
+    </section>
+  );
+}
+
+function Footer() {
+  const year = new Date().getFullYear();
+
+  return (
+    <footer className="site-footer">
+      <div className="footer-inner">
+
+        <div className="footer-top">
+          {/* Brand column */}
+          <div className="footer-brand">
+            <span className="footer-brand-name">
+              <span className="footer-brand-mark"></span>
+              Cyberfarms
+            </span>
+            <p>
+              A software company headquartered in Hyderabad, India — building
+              aggregators, platforms, and supply chain software.
+            </p>
+            <div className="footer-social">
+              <a href="#" aria-label="LinkedIn">
+                <svg viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+              </a>
+              <a href="#" aria-label="Twitter / X">
+                <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              </a>
+              <a href="#" aria-label="Instagram">
+                <svg viewBox="0 0 24 24"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg>
+              </a>
+              <a href="#" aria-label="GitHub">
+                <svg viewBox="0 0 24 24"><path d="M12 .5C5.37.5 0 5.78 0 12.292c0 5.211 3.438 9.63 8.205 11.188.6.111.82-.254.82-.567 0-.28-.01-1.022-.015-2.005-3.338.711-4.042-1.582-4.042-1.582-.546-1.361-1.335-1.725-1.335-1.725-1.087-.731.084-.716.084-.716 1.205.082 1.838 1.215 1.838 1.215 1.07 1.803 2.809 1.282 3.495.981.108-.763.417-1.282.76-1.577-2.665-.295-5.466-1.309-5.466-5.827 0-1.287.465-2.339 1.235-3.164-.135-.298-.54-1.497.105-3.121 0 0 1.005-.316 3.3 1.209.96-.262 1.98-.392 3-.398 1.02.006 2.04.136 3 .398 2.28-1.525 3.285-1.209 3.285-1.209.645 1.624.24 2.823.12 3.121.765.825 1.23 1.877 1.23 3.164 0 4.53-2.805 5.527-5.475 5.817.42.354.81 1.077.81 2.182 0 1.578-.015 2.846-.015 3.229 0 .309.21.678.825.56C20.565 21.917 24 17.495 24 12.292 24 5.78 18.627.5 12 .5z"/></svg>
+              </a>
+            </div>
+          </div>
+
+          {/* Company column */}
+          <div className="footer-col">
+            <h4>Company</h4>
+            <ul>
+              <li><a href="#about">About Us</a></li>
+              <li><a href="#">Careers</a></li>
+              <li><a href="#">Success Stories</a></li>
+              <li><a href="#">Communities</a></li>
+            </ul>
+          </div>
+
+          {/* Support column */}
+          <div className="footer-col">
+            <h4>Support</h4>
+            <ul>
+              <li><a href="#">Customer Support</a></li>
+              <li><a href="#faq">FAQ</a></li>
+              <li><a href="#contact">Contact Us</a></li>
+              <li><a href="#blogs">Blog</a></li>
+            </ul>
+          </div>
+
+          {/* Address column */}
+          <div className="footer-col">
+            <h4>Address</h4>
+            <address>
+              Cyberfarms<br />
+              Hyderabad, India<br />
+              <a href="mailto:cyberfarms.ltd@gmail.com">
+                cyberfarms.ltd@gmail.com
+              </a>
+            </address>
+          </div>
+        </div>
+
+        {/* Bottom row */}
+        <div className="footer-bottom">
+          <span>© {year} Cyberfarms. All rights reserved.</span>
+          <div className="footer-legal">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms & Conditions</a>
+          </div>
+        </div>
+
+      </div>
+    </footer>
+  );
+}
+
+    function App() {
+      const [siteData, setSiteData] = React.useState(() => window.CyberfarmsData.load());
+
+      // Pick up edits made in admin.html if it's open in another tab of the same browser.
+      React.useEffect(() => {
+        const onStorage = (e) => {
+          if (e.key === window.CyberfarmsData.STORAGE_KEY) {
+            setSiteData(window.CyberfarmsData.load());
+          }
+        };
+        window.addEventListener("storage", onStorage);
+        return () => window.removeEventListener("storage", onStorage);
+      }, []);
+
+      return (
+        <div>
+            <NavigationBar />
+            <Home heading={siteData.home.heading} body={siteData.home.body} />
+            <AboutUs heading={siteData.about.heading} body={siteData.about.body} />
+            <Services categories={siteData.categories} />
+            <Blogs />
+            <FAQ />
+            <Events />
+            <ContactUs />
+            <Footer />
+        </div>
+      );
+    }
+
+    // Find the mount point in the HTML above.
+    const container = document.getElementById('root');
+
+    // React 18 way: create a "root" and tell it what to render.
+    const root = ReactDOM.createRoot(container);
+    root.render(<App />);
+
+  </script>
+
+</body>
+</html>
