@@ -10,9 +10,7 @@
   const defaultData = {
     home: {
       heading: "Welcome to Cyberfarms",
-      git --version      git init
-      git branch -M main
-      git remote add origin https://github.com/SaiPrasanth-R/Cyberfarms-website.git      body: "We build technology for businesses that technology usually ignores.\n\n" +
+      body: "We build technology for businesses that technology usually ignores.\n\n" +
         "Cyberfarms Private Limited is a consumer AI and platform development company. " +
         "We build platforms, applications and aggregation services for small and growing " +
         "businesses, using the same quality of technology that large enterprises take for granted.\n\n" +
