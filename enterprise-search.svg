@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" role="img" aria-labelledby="title description">
+  <title id="title">Enterprise search connecting factories</title>
+  <desc id="description">Two factories connected by a glowing network line with a magnifying glass in the foreground.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7C3CFF"/>
+      <stop offset="0.55" stop-color="#FF4F9A"/>
+      <stop offset="1" stop-color="#FF8A3D"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFF200"/>
+      <stop offset="1" stop-color="#FFB800"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="500" rx="28" fill="url(#background)"/>
+  <circle cx="450" cy="220" r="118" fill="#FFFFFF" opacity="0.14"/>
+  <path d="M230 225 C330 115 570 115 670 225" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" opacity="0.9"/>
+  <circle cx="230" cy="225" r="12" fill="#FFF200"/>
+  <circle cx="450" cy="150" r="12" fill="#FFF200"/>
+  <circle cx="670" cy="225" r="12" fill="#FFF200"/>
+  <g fill="#193B35">
+    <path d="M105 350V245l72-48 72 48v105z"/>
+    <path d="M140 245v-62h31v42h22v-62h31v82z"/>
+    <path d="M651 350V245l72-48 72 48v105z"/>
+    <path d="M686 245v-62h31v42h22v-62h31v82z"/>
+  </g>
+  <g fill="#FFFBD6">
+    <rect x="132" y="270" width="22" height="24" rx="3"/>
+    <rect x="169" y="270" width="22" height="24" rx="3"/>
+    <rect x="206" y="270" width="22" height="24" rx="3"/>
+    <rect x="678" y="270" width="22" height="24" rx="3"/>
+    <rect x="715" y="270" width="22" height="24" rx="3"/>
+    <rect x="752" y="270" width="22" height="24" rx="3"/>
+  </g>
+  <circle cx="450" cy="280" r="74" fill="url(#glass)" stroke="#FFFFFF" stroke-width="10"/>
+  <circle cx="450" cy="280" r="43" fill="none" stroke="#193B35" stroke-width="13"/>
+  <path d="m483 313 48 48" fill="none" stroke="#193B35" stroke-width="18" stroke-linecap="round"/>
+  <path d="M416 280h68M450 246v68" stroke="#193B35" stroke-width="7" stroke-linecap="round" opacity="0.75"/>
+</svg>
